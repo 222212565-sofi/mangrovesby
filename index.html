@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mangrove Sentinel | Surabaya 2030</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">    
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #031206; 
+            color: #e2e8f0; 
+            overflow-x: hidden; 
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #010602; }
+        ::-webkit-scrollbar-thumb { background: #f472b6; border-radius: 10px; } 
+
+        /* Glassmorphism Elements */
+        .glass { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06); 
+            border-radius: 20px; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .text-gradient { 
+            background: linear-gradient(to right, #10b981, #f472b6, #fbbf24); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        .reveal { visibility: hidden; }
+        
+        /* Tables */
+        .table-container { overflow-x: auto; border-radius: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(16, 185, 129, 0.15); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(16, 185, 129, 0.1); color: #34d399; text-transform: uppercase; letter-spacing: 1px; padding: 14px 16px; font-weight: 700; font-size: 0.85rem;}
+        td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; font-size: 0.85rem; vertical-align: middle;}
+        tr:hover td { background: rgba(16, 185, 129, 0.05); }
+
+        /* Interactive Components */
+        .tab-btn { transition: all 0.3s ease; }
+        .tab-btn.active { background: #10b981; color: #020b04; font-weight: 800; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); border-color: transparent; }
+        
+        /* Accordion */
+        .dropdown-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out, padding 0.5s ease; opacity: 0; }
+        .dropdown-content.active { max-height: 800px; padding: 1.5rem; opacity: 1; }
+
+        /* Sliders */
+        .slider-container { position: relative; overflow: hidden; width: 100%; border-radius: 16px; }
+        .slider-track { display: flex; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; }
+        .slide { min-width: 100%; padding: 0 10px; }
+        .slider-arrow { 
+            position: absolute; top: 50%; transform: translateY(-50%); 
+            background: rgba(16, 185, 129, 0.85); color: #000; border: none; 
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; 
+            z-index: 10; display: flex; align-items: center; justify-content: center; 
+            font-weight: 900; font-size: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .slider-arrow:hover { background: #fbbf24; transform: translateY(-50%) scale(1.1); }
+        .arrow-left { left: 15px; }
+        .arrow-right { right: 15px; }
+        
+        /* Image Consistency Framework */
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .img-zoom { transition: transform 0.4s ease; width: 100%; height: 100%; object-fit: contain; }
+        .img-zoom:hover { transform: scale(1.03); z-index: 20; position: relative; }
+
+        /* Maps Iframe */
+        .earth-container { width: 100%; aspect-ratio: 16/9; max-height: 85vh; border-radius: 20px; overflow: hidden; border: 1px solid rgba(16, 185, 129, 0.3); }
+    </style>
+</head>
+<body class="antialiased selection:bg-pink-500 selection:text-white">
+
+    <nav class="fixed w-full z-50 px-6 lg:px-12 py-5 flex justify-between items-center transition-all duration-300" id="navbar">
+        <div class="font-black text-2xl italic tracking-tighter text-white">SBY<span class="text-emerald-500 text-3xl tracking-normal uppercase">Mangrove</span></div>
+        <div class="hidden lg:flex gap-8 text-sm font-bold uppercase tracking-widest">
+            <a href="#urgensi" class="hover:text-emerald-400 transition">Urgensi</a>
+            <a href="#metode" class="hover:text-emerald-400 transition">Metodologi</a>
+            <a href="#satelit" class="hover:text-emerald-400 transition">Satelit & Earth</a>
+            <a href="#hasil" class="hover:text-emerald-400 transition">Dinamika Historis</a>
+            <a href="#prediksi" class="text-pink-400 border border-pink-500/50 bg-pink-500/10 px-6 py-2 rounded-full hover:bg-pink-500 hover:text-white transition">Proyeksi 2030</a>
+        </div>
+    </nav>
+
+    <section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 pt-20">
+        <div class="absolute inset-0 bg-[url('assets/bg-hero.jpg')] bg-cover bg-center opacity-30 scale-105 animate-pulse-slow"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#010602]/95 via-[#f43f5e]/5 to-[#031206]"></div>
+        
+        <div class="relative z-10 text-center max-w-6xl mt-10">
+            <span class="text-pink-400 font-bold tracking-[0.4em] uppercase text-xs md:text-sm mb-6 block reveal border border-pink-500/30 inline-block px-5 py-1.5 rounded-full bg-pink-900/20 shadow-[0_0_15px_rgba(244,114,182,0.3)]">Skripsi Sains Data 2026</span>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight reveal delay-100">
+                DI BALIK PETA: <br><span class="text-gradient">MELIHAT MASA DEPAN MANGROVE SURABAYA</span>
+            </h1>
+            <p class="text-base md:text-xl text-slate-300 mb-12 italic reveal delay-200 max-w-4xl mx-auto leading-relaxed border-l-4 border-pink-500 pl-6 text-left">
+                "Analisis Spatio-Temporal dan Prediksi Perubahan Tutupan Lahan Mangrove Menggunakan Citra Sentinel-2 dan Model Cellular Automata-Artificial Neural Network (CA-ANN)."
+            </p>
+            <div class="reveal delay-300 flex justify-center">
+                <a href="#urgensi" class="bg-pink-500 text-white px-10 py-4 rounded-full font-black uppercase text-sm tracking-widest hover:bg-pink-400 hover:shadow-[0_0_30px_rgba(244,114,182,0.6)] transition-all duration-300">
+                    Mulai Jelajah Data
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="urgensi" class="py-24 lg:py-32 px-6 lg:px-12 max-w-7xl mx-auto border-b border-white/5">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-16">
+            <div class="lg:col-span-7 reveal flex flex-col h-full justify-center">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="w-16 h-1.5 bg-emerald-500 rounded"></span>
+                    <h2 class="text-4xl lg:text-5xl font-black uppercase tracking-tighter">Benteng yang <span class="text-emerald-500">Terancam</span></h2>
+                </div>
+                <p class="text-slate-300 leading-relaxed mb-6 text-justify text-sm md:text-base">
+                    Ekosistem pesisir Surabaya memegang peranan vital sebagai infrastruktur hijau penahan abrasi dan intrusi air laut. Sayangnya, kawasan metropolitan ini menghadapi <b>tekanan konversi lahan yang sangat masif</b> menjadi kawasan industri, tambak, dan permukiman permanen (Yusuf & Susetyo, 2019). Data Badan Pusat Statistik (BPS) mengonfirmasi hal ini, mencatat lonjakan penduduk Kota Surabaya secara signifikan dari <b>2.885.245 jiwa (2018)</b> menjadi <b>3.018.022 jiwa (2024)</b>.
+                </p>
+                <div class="glass p-6 border-l-4 border-red-500 bg-red-950/20 mb-8 transform hover:translate-x-2 transition">
+                    <p class="italic text-sm md:text-base text-slate-200 leading-relaxed">"Kawasan pesisir Surabaya memiliki kerentanan tinggi terhadap banjir rob dengan ketinggian pasang maksimum mencapai 130 cm hingga 150 cm. Kehilangan mangrove secara langsung akan melipatgandakan risiko bencana kota." <br><span class="text-red-400 text-xs not-italic font-bold mt-3 block">— (BMKG Maritim Tanjung Perak & Pemkot Surabaya, 2024)</span></p>
+                </div>
+                
+                <p class="text-sm md:text-base text-slate-300 mb-4 text-left">Data administratif terbaru dari Dinas Ketahanan Pangan dan Pertanian (2025) menunjukkan penyusutan drastis di area yang bahkan telah berstatus <b>kawasan lindung konservasi</b>:</p>
+                <div class="table-container shadow-2xl">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="text-left pl-6">Lokasi Konservasi</th>
+                                <th>2023 (Ha)</th>
+                                <th>2025 (Ha)</th>
+                                <th>Total Perubahan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm font-medium text-slate-200">
+                            <tr><td class="text-left pl-6">KRM Wonorejo</td><td>56.00</td><td>8.00</td><td class="text-red-400 font-bold">-48.00 Ha</td></tr>
+                            <tr><td class="text-left pl-6">THR Lempung</td><td>4.40</td><td>2.35</td><td class="text-red-400 font-bold">-2.05 Ha</td></tr>
+                            <tr><td class="text-left pl-6">THR Pakal 1 & 2</td><td>13.30</td><td>12.86</td><td class="text-red-400 font-bold">-0.44 Ha</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 flex flex-col h-full justify-center">
+                <h3 class="text-xs md:text-sm font-bold uppercase tracking-widest text-slate-500 mb-5 reveal">Sorotan Media Utama</h3>
+                <div class="flex flex-col gap-5">
+                    <a href="http://lestari.kompas.com/read/2025/11/21/130000186/bentrok-dengan-komitmen-iklim-reklamasi-surabaya-ancam-900-hektar-mangrove" target="_blank" class="block glass p-6 hover:border-emerald-500 transition-all transform hover:-translate-y-1 hover:scale-[1.02] group relative overflow-hidden reveal delay-100 shadow-lg">
+                        <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-black uppercase tracking-widest text-emerald-400 bg-emerald-900/30 px-3 py-1 rounded border border-emerald-500/30">Kompas Lestari</span>
+                                <span class="text-xs text-slate-400">21 Nov 2025</span>
+                            </div>
+                            <h4 class="text-base font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors leading-snug">Bentrok dengan Komitmen Iklim, Reklamasi Surabaya Ancam 900 Hektar Mangrove</h4>
+                            <p class="text-sm text-slate-400 leading-relaxed mb-4 line-clamp-2 text-justify">Rencana Proyek Strategis Nasional (PSN) berupa reklamasi di pesisir Surabaya dinilai berbenturan dengan upaya mitigasi iklim dan mengancam kelestarian sisa hutan mangrove kota.</p>
+                            <div class="flex justify-end items-center gap-2">
+                                <span class="text-xs font-bold text-emerald-500 group-hover:text-emerald-300 transition-colors uppercase tracking-wider">Baca Artikel</span>
+                                <span class="text-emerald-500 group-hover:text-emerald-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">↗</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://jatim.idntimes.com/news/jawa-timur/reklamasi-tak-hanya-merusak-mangrove-tapi-seluruh-surabaya-c1c2-01-7sd13-6ryb1f" target="_blank" class="block glass p-6 hover:border-blue-500 transition-all transform hover:-translate-y-1 hover:scale-[1.02] group relative overflow-hidden reveal delay-200 shadow-lg">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-black uppercase tracking-widest text-blue-400 bg-blue-900/30 px-3 py-1 rounded border border-blue-500/30">IDN Times</span>
+                                <span class="text-xs text-slate-400">06 Agu 2024</span>
+                            </div>
+                            <h4 class="text-base font-bold text-white mb-2 group-hover:text-blue-300 transition-colors leading-snug">Dampak Reklamasi terhadap Ekosistem dan Kota Surabaya</h4>
+                            <p class="text-sm text-slate-400 leading-relaxed mb-4 line-clamp-2 text-justify">Aktivis lingkungan menyoroti bahwa reklamasi di pesisir Surabaya berpotensi merusak mangrove sebagai pelindung alami, memicu abrasi, intrusi air laut, hingga banjir rob.</p>
+                            <div class="flex justify-end items-center gap-2">
+                                <span class="text-xs font-bold text-blue-500 group-hover:text-blue-300 transition-colors uppercase tracking-wider">Baca Artikel</span>
+                                <span class="text-blue-500 group-hover:text-blue-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">↗</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://kominfo.jatimprov.go.id/berita/wali-kota-eri-cahyadi-maksimalkan-mangrove-hingga-tanggul-pengaman-untuk-cegah-banjir-rob" target="_blank" class="block glass p-6 hover:border-yellow-500 transition-all transform hover:-translate-y-1 hover:scale-[1.02] group relative overflow-hidden reveal delay-300 shadow-lg">
+                        <div class="absolute inset-0 bg-gradient-to-r from-yellow-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-black uppercase tracking-widest text-yellow-400 bg-yellow-900/30 px-3 py-1 rounded border border-yellow-500/30">Kominfo Jatim</span>
+                                <span class="text-xs text-slate-400">13 Des 2024</span>
+                            </div>
+                            <h4 class="text-base font-bold text-white mb-2 group-hover:text-yellow-300 transition-colors leading-snug">Pemkot Surabaya Perkuat Mitigasi Banjir Rob</h4>
+                            <p class="text-sm text-slate-400 leading-relaxed mb-4 line-clamp-2 text-justify">Menghadapi potensi banjir rob akibat fenomena pasang maksimum, Pemkot Surabaya memperkuat perlindungan pesisir melalui pelestarian mangrove dan pembangunan tanggul.</p>
+                            <div class="flex justify-end items-center gap-2">
+                                <span class="text-xs font-bold text-yellow-500 group-hover:text-yellow-300 transition-colors uppercase tracking-wider">Baca Artikel</span>
+                                <span class="text-yellow-500 group-hover:text-yellow-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">↗</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="metode" class="py-24 lg:py-32 px-6 lg:px-12 bg-gradient-to-b from-[#031206] to-[#010602]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 reveal">
+                <span class="text-emerald-500 font-bold tracking-widest text-xs md:text-sm uppercase block mb-3">Kerangka Kerja CRISP-DM</span>
+                <h2 class="text-4xl lg:text-5xl font-black tracking-tighter uppercase">Ekosistem <span class="text-emerald-500">Riset Terintegrasi</span></h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+                <div class="glass p-8 text-center hover:border-emerald-500 hover:-translate-y-2 transition-all duration-300 reveal group flex flex-col h-full">
+                    <div class="text-5xl mb-6 group-hover:scale-110 transition">☁️</div>
+                    <h3 class="text-emerald-400 font-black mb-3 uppercase text-sm tracking-wide">Google Earth Engine</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed flex-grow">Pemrosesan <i>cloud computing</i> citra Sentinel-2. Meliputi <i>cloud masking</i> (&lt;20%) dan <i>Median Composite</i>. Mengeksekusi algoritma <b><i>Random Forest</i></b> (100 <i>trees</i>, rasio 80:20).</p>
+                </div>
+                <div class="glass p-8 text-center hover:border-pink-500 hover:-translate-y-2 transition-all duration-300 reveal delay-100 group flex flex-col h-full">
+                    <div class="text-5xl mb-6 group-hover:scale-110 transition">🌐</div>
+                    <h3 class="text-pink-400 font-black mb-3 uppercase text-sm tracking-wide">QGIS & MOLUSCE</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed flex-grow">Eksekusi pemodelan spasial <b>CA-ANN</b>. ANN dilatih (LR: 0.01, iterasi: 1000, momentum: 0.10) memodelkan probabilitas transisi, dan CA mensimulasikan letak sel spasial hingga 2030.</p>
+                </div>
+                <div class="glass p-8 text-center hover:border-emerald-500 hover:-translate-y-2 transition-all duration-300 reveal delay-200 group flex flex-col h-full">
+                    <div class="text-5xl mb-6 group-hover:scale-110 transition">🛰️</div>
+                    <h3 class="text-emerald-400 font-black mb-3 uppercase text-sm tracking-wide">SRTM USGS</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed flex-grow">Ekstraksi data variabel pendorong topografi (biofisik): <b>Elevasi (DEM)</b> untuk genangan pasang surut dan <b>Kemiringan Lereng (<i>Slope</i>)</b> untuk stabilitas sedimen mangrove.</p>
+                </div>
+                <div class="glass p-8 text-center hover:border-emerald-500 hover:-translate-y-2 transition-all duration-300 reveal delay-300 group flex flex-col h-full">
+                    <div class="text-5xl mb-6 group-hover:scale-110 transition">🗺️</div>
+                    <h3 class="text-emerald-400 font-black mb-3 uppercase text-sm tracking-wide">OpenStreetMap</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed flex-grow">Ekstraksi data vektor untuk dianalisis menggunakan <i>Euclidean Distance</i>, menghasilkan variabel pendorong: <b>Jarak ke Jalan</b> (antropogenik) dan <b>Jarak ke Sungai</b> (hidrologi).</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+                
+                <div class="reveal w-full">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center text-pink-500 font-black text-xl shrink-0">1</div>
+                        <h3 class="text-2xl lg:text-3xl font-black text-white uppercase tracking-tight">Variabel <span class="text-yellow-500">Pendorong (Drivers)</span></h3>
+                    </div>
+                    <p class="text-sm md:text-base text-slate-400 mb-8 text-justify leading-relaxed">Pemilihan keempat variabel fisik ini didasarkan pada relevansinya terhadap daya dukung lingkungan mangrove secara hidrologi & topografi, serta untuk mengukur besarnya tekanan aksesibilitas antropogenik di kawasan metropolitan Surabaya.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="glass overflow-hidden">
+                            <button onclick="toggleDriver('dem')" class="w-full p-5 text-left flex justify-between items-center hover:bg-emerald-900/30 transition-colors">
+                                <span class="font-bold text-sm md:text-base text-emerald-100">Elevasi Lahan (DEM)</span>
+                                <span id="icon-dem" class="text-emerald-500 font-bold text-2xl transition-transform duration-300 leading-none">+</span>
+                            </button>
+                            <div id="dem" class="dropdown-content bg-black/50 border-t border-white/5">
+                                <div class="img-wrapper aspect-[4/3] mb-4">
+                                    <img src="assets/var_dem.png" alt="Peta DEM" class="img-zoom">
+                                </div>
+                                <p class="text-sm text-slate-300 text-justify leading-relaxed">Ketinggian lahan secara teknis menentukan zonasi frekuensi genangan air pasang laut. Hasil analisis keruangan membuktikan bahwa mangrove Surabaya paling optimal berkembang di zona elevasi sangat rendah yakni <b>0–2 mdpl</b> dengan kontribusi perkembangan mencapai <b>48,27%</b>.</p>
+                            </div>
+                        </div>
+
+                        <div class="glass overflow-hidden">
+                            <button onclick="toggleDriver('slope')" class="w-full p-5 text-left flex justify-between items-center hover:bg-emerald-900/30 transition-colors">
+                                <span class="font-bold text-sm md:text-base text-emerald-100">Kemiringan Lereng (Slope)</span>
+                                <span id="icon-slope" class="text-emerald-500 font-bold text-2xl transition-transform duration-300 leading-none">+</span>
+                            </button>
+                            <div id="slope" class="dropdown-content bg-black/50 border-t border-white/5">
+                                <div class="img-wrapper aspect-[4/3] mb-4">
+                                    <img src="assets/var_slope.png" alt="Peta Slope" class="img-zoom">
+                                </div>
+                                <p class="text-sm text-slate-300 text-justify leading-relaxed">Faktor pembatas fisik yang menentukan stabilitas sedimen untuk retensi air. Perkembangan mangrove sangat terkonsentrasi pada zona dengan kelerengan sangat landai yakni <b>0%–3%</b> dengan dominasi mutlak sebesar <b>74,93%</b>.</p>
+                            </div>
+                        </div>
+
+                        <div class="glass overflow-hidden">
+                            <button onclick="toggleDriver('road')" class="w-full p-5 text-left flex justify-between items-center hover:bg-emerald-900/30 transition-colors">
+                                <span class="font-bold text-sm md:text-base text-emerald-100">Jarak Terhadap Jalan Raya</span>
+                                <span id="icon-road" class="text-emerald-500 font-bold text-2xl transition-transform duration-300 leading-none">+</span>
+                            </button>
+                            <div id="road" class="dropdown-content bg-black/50 border-t border-white/5">
+                                <div class="img-wrapper aspect-[4/3] mb-4">
+                                    <img src="assets/var_jalan.png" alt="Peta Jarak Jalan" class="img-zoom">
+                                </div>
+                                <p class="text-sm text-slate-300 text-justify leading-relaxed">Variabel antropogenik yang merepresentasikan ancaman konversi. Pertumbuhan mangrove secara persisten menjauhi jaringan jalan <b>(> 60 meter)</b> dengan proporsi <b>54,08%</b>. Area di dekat jalan sangat rentan alih fungsi menjadi lahan komersial/terbangun.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="glass overflow-hidden">
+                            <button onclick="toggleDriver('river')" class="w-full p-5 text-left flex justify-between items-center hover:bg-emerald-900/30 transition-colors">
+                                <span class="font-bold text-sm md:text-base text-emerald-100">Jarak Terhadap Sungai</span>
+                                <span id="icon-river" class="text-emerald-500 font-bold text-2xl transition-transform duration-300 leading-none">+</span>
+                            </button>
+                            <div id="river" class="dropdown-content bg-black/50 border-t border-white/5">
+                                <div class="img-wrapper aspect-[4/3] mb-4">
+                                    <img src="assets/var_sungai.png" alt="Peta Jarak Sungai" class="img-zoom">
+                                </div>
+                                <p class="text-sm text-slate-300 text-justify leading-relaxed">Sungai adalah urat nadi ekologis penyuplai sedimen bernutrisi dan air tawar. Mayoritas dinamika mangrove memusat pada zona sangat dekat aliran sungai <b>(0 – 500 meter)</b> sebesar <b>58,90%</b>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal delay-200 w-full h-full flex flex-col">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-500 font-black text-xl shrink-0">2</div>
+                        <h3 class="text-2xl lg:text-3xl font-black text-white uppercase tracking-tight">Multi-Indeks <span class="text-emerald-500">Spektral</span></h3>
+                    </div>
+                    <p class="text-sm md:text-base text-slate-400 mb-8 text-justify leading-relaxed">Tantangan utama di perkotaan heterogen adalah sulitnya memisahkan piksel mangrove dari vegetasi darat biasa. Penelitian ini mengintegrasikan 4 indeks spektral khusus untuk dieksekusi oleh <i>Random Forest</i> secara terintegrasi.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8 flex-grow">
+                        <div class="glass p-6 border-t-4 border-emerald-500 hover:-translate-y-2 transition-transform duration-300 bg-gradient-to-b from-white/5 to-transparent flex flex-col h-full">
+                            <span class="text-emerald-400 font-black text-2xl tracking-tighter block mb-1">NDVI</span>
+                            <span class="text-xs text-slate-400 block mb-4 font-mono border-b border-white/10 pb-3">
+                                (NIR - RED) / (NIR + RED)
+                            </span>
+                            <span class="text-sm text-slate-300 leading-relaxed block flex-grow text-justify"><i>Normalized Difference Vegetation Index</i>. Mengidentifikasi tingkat kehijauan dan kerapatan klorofil tajuk vegetasi secara universal.</span>
+                        </div>
+                        
+                        <div class="glass p-6 border-t-4 border-blue-400 hover:-translate-y-2 transition-transform duration-300 bg-gradient-to-b from-white/5 to-transparent flex flex-col h-full">
+                            <span class="text-blue-400 font-black text-2xl tracking-tighter block mb-1">NDMI</span>
+                            <span class="text-xs text-slate-400 block mb-4 font-mono border-b border-white/10 pb-3">
+                                (NIR - SWIR) / (NIR + SWIR)
+                            </span>
+                            <span class="text-sm text-slate-300 leading-relaxed block flex-grow text-justify"><i>Normalized Difference Moisture Index</i>. Sangat peka mendeteksi kandungan air (kelembapan) yang tinggi pada kanopi ekosistem pasang surut.</span>
+                        </div>
+
+                        <div class="glass p-6 border-t-4 border-cyan-400 hover:-translate-y-2 transition-transform duration-300 bg-gradient-to-b from-white/5 to-transparent flex flex-col h-full">
+                            <span class="text-cyan-400 font-black text-2xl tracking-tighter block mb-1">MNDWI</span>
+                            <span class="text-xs text-slate-400 block mb-4 font-mono border-b border-white/10 pb-3">
+                                (GREEN - SWIR1) / (GREEN + SWIR1)
+                            </span>
+                            <span class="text-sm text-slate-300 leading-relaxed block flex-grow text-justify"><i>Modified Normalized Difference Water Index</i>. Mensupresi <i>noise</i> lahan terbangun untuk memisahkan batas badan air (sungai/tambak) secara presisi.</span>
+                        </div>
+
+                        <div class="glass p-6 border-t-4 border-yellow-400 hover:-translate-y-2 transition-transform duration-300 bg-gradient-to-b from-white/5 to-transparent flex flex-col h-full">
+                            <span class="text-yellow-400 font-black text-2xl tracking-tighter block mb-1">MVI</span>
+                            <span class="text-xs text-slate-400 block mb-4 font-mono border-b border-white/10 pb-3">
+                                (NIR - GREEN) / (SWIR1 - GREEN)
+                            </span>
+                            <span class="text-sm text-slate-300 leading-relaxed block flex-grow text-justify"><i>Mangrove Vegetation Index</i>. Indeks terbaru yang diformulasikan khusus untuk mendiskriminasi piksel mangrove murni dari vegetasi non-mangrove.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="satelit" class="py-24 lg:py-32 px-6 lg:px-12 bg-black border-t border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-emerald-500 font-bold tracking-widest text-xs md:text-sm uppercase block mb-3">Observasi Visual</span>
+                <h2 class="text-4xl lg:text-5xl font-black uppercase tracking-tighter text-white">Mesin Waktu <span class="text-emerald-500">Pesisir</span></h2>
+            </div>
+            
+            <div class="flex flex-wrap justify-center mb-10 gap-4 md:gap-6 reveal">
+                <button onclick="switchView('historic')" id="btn-historic" class="px-6 md:px-10 py-3 glass rounded-full text-xs md:text-sm font-black active bg-emerald-500 text-[#020b04] shadow-[0_0_20px_rgba(16,185,129,0.5)] transition-all transform hover:scale-105 tracking-widest">
+                    CITRA SENTINEL-2 (2018-2024)
+                </button>
+                <button onclick="switchView('live')" id="btn-live" class="px-6 md:px-10 py-3 glass rounded-full text-xs md:text-sm font-bold text-slate-400 hover:text-white transition-all transform hover:scale-105 border border-white/10 tracking-widest">
+                    GOOGLE EARTH WEB
+                </button>
+            </div>
+
+            <div class="earth-container glass mb-12 reveal delay-100 relative bg-[#020b04]">
+                <div id="historic-view" class="w-full h-full relative flex items-center justify-center bg-black">
+                    <img id="sat-image" src="assets/satelit_2018.png" class="w-full h-full object-contain transition-opacity duration-700 absolute inset-0">
+                    <div class="absolute top-6 left-6 md:top-8 md:left-8 bg-black/80 backdrop-blur-md px-6 md:px-8 py-3 md:py-4 rounded-2xl border border-emerald-500/50 shadow-2xl">
+                        <span class="block text-xs text-emerald-500 font-bold uppercase tracking-widest mb-1">Tahun Akuisisi</span>
+                        <span id="sat-year-label" class="text-4xl md:text-5xl font-black text-white">2018</span>
+                    </div>
+                </div>
+
+                <div id="live-view" class="w-full h-full hidden relative">
+                    <iframe 
+                        src="https://earth.google.com/web/@0.00003186,-0.00003468,127.67679194a,3799.86840033d,1y,-0h,0t,0r/data=CgwqBggBEgAYAUICCAE6AwoBMEICCABKDQj___________8BEAA?authuser=0" 
+                        class="w-full h-full border-0" 
+                        allowfullscreen="" loading="lazy">
+                    </iframe>
+                    <div class="absolute bottom-6 right-6 md:bottom-8 md:right-8 bg-black/80 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-2xl pointer-events-none">
+                        <p class="text-xs text-white leading-relaxed">Gunakan fitur <b>Time Slider</b> di Google Earth<br>untuk melihat histori pesisir secara riil.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="historic-controls" class="reveal delay-200">
+                <div class="flex justify-center gap-3 md:gap-5 mb-10">
+                    <button onclick="setYear(2018, this)" class="tab-btn active px-6 md:px-10 py-3 glass rounded-full text-xs md:text-sm font-bold transition border border-white/10 hover:bg-white/10">2018</button>
+                    <button onclick="setYear(2021, this)" class="tab-btn px-6 md:px-10 py-3 glass rounded-full text-xs md:text-sm font-bold transition border border-white/10 hover:bg-white/10">2021</button>
+                    <button onclick="setYear(2024, this)" class="tab-btn px-6 md:px-10 py-3 glass rounded-full text-xs md:text-sm font-bold transition border border-white/10 hover:bg-white/10">2024</button>
+                </div>
+                <div class="text-center">
+                    <button id="play-btn" class="bg-pink-500 text-white px-10 md:px-14 py-4 rounded-full font-black uppercase text-xs md:text-sm tracking-widest hover:bg-pink-400 transition-all shadow-[0_0_25px_rgba(244,114,182,0.4)] transform hover:scale-105 border-0">
+                        ▶ PLAY TIME-LAPSE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="hasil" class="py-24 lg:py-32 px-6 lg:px-12 bg-gradient-to-b from-[#010602] to-[#031206]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 reveal">
+                <span class="text-emerald-500 font-bold tracking-widest text-xs md:text-sm uppercase block mb-3">Analisis Land Use Land Cover (LULC)</span>
+                <h2 class="text-4xl lg:text-5xl font-black tracking-tighter uppercase">
+                    Dinamika <span class="text-emerald-500">Spatio-Temporal</span> 2018-2024
+                </h2>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 mb-24 items-center">
+                <div class="lg:col-span-7 reveal w-full">
+                    <div class="glass p-3 border border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.15)] bg-black/50 mb-8">
+                        <div class="slider-container">
+                            <div class="slider-track" id="lulc-slider">
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-emerald-950 border border-emerald-500 text-emerald-400 px-5 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-4 shadow-lg">Peta LULC 2018</span>
+                                    <div class="img-wrapper aspect-[4/3]">
+                                        <img src="assets/lulc_2018.png" alt="LULC 2018" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-emerald-950 border border-emerald-500 text-emerald-400 px-5 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-4 shadow-lg">Peta LULC 2021</span>
+                                    <div class="img-wrapper aspect-[4/3]">
+                                        <img src="assets/lulc_2021.png" alt="LULC 2021" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-emerald-950 border border-emerald-500 text-emerald-400 px-5 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-4 shadow-lg">Peta LULC 2024</span>
+                                    <div class="img-wrapper aspect-[4/3]">
+                                        <img src="assets/lulc_2024.png" alt="LULC 2024" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-yellow-950 border border-yellow-500 text-yellow-400 px-5 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-4 shadow-lg">Deteksi Perubahan 2018-2021</span>
+                                    <div class="img-wrapper aspect-[4/3]">
+                                        <img src="assets/perubahan_1821.png" alt="Perubahan 18-21" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-yellow-950 border border-yellow-500 text-yellow-400 px-5 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-4 shadow-lg">Deteksi Perubahan 2021-2024</span>
+                                    <div class="img-wrapper aspect-[4/3]">
+                                        <img src="assets/perubahan_2124.png" alt="Perubahan 21-24" class="img-zoom">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-6">
+                        <button onclick="goToSlide('lulc-slider', 0, '.lulc-btn', this)" class="lulc-btn tab-btn active px-4 md:px-5 py-2 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition">LULC '18</button>
+                        <button onclick="goToSlide('lulc-slider', 1, '.lulc-btn', this)" class="lulc-btn tab-btn px-4 md:px-5 py-2 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition">LULC '21</button>
+                        <button onclick="goToSlide('lulc-slider', 2, '.lulc-btn', this)" class="lulc-btn tab-btn px-4 md:px-5 py-2 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition">LULC '24</button>
+                        <button onclick="goToSlide('lulc-slider', 3, '.lulc-btn', this)" class="lulc-btn tab-btn px-4 md:px-5 py-2 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition text-yellow-400 border-yellow-500/30">Δ 18-21</button>
+                        <button onclick="goToSlide('lulc-slider', 4, '.lulc-btn', this)" class="lulc-btn tab-btn px-4 md:px-5 py-2 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition text-yellow-400 border-yellow-500/30">Δ 21-24</button>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="toggleAutoPlay('lulc-slider', this, 5, '.lulc-btn', 'emerald')" class="bg-emerald-500 text-[#020b04] px-8 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] transform hover:scale-105 border-0">
+                            ▶ PLAY TIME-LAPSE
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 reveal delay-200 flex flex-col justify-center">
+                    <h3 class="text-lg md:text-xl font-black uppercase tracking-widest text-emerald-500 mb-6 text-center md:text-left">Akurasi Random Forest (2024)</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 md:gap-5 mb-6">
+                        <div class="glass p-5 md:p-6 text-center border-l-4 border-emerald-500 bg-emerald-900/10">
+                            <span class="text-3xl md:text-4xl font-black text-white block">98.05%</span>
+                            <span class="text-[10px] md:text-xs uppercase tracking-widest text-emerald-400 mt-2 block">Overall Accuracy</span>
+                        </div>
+                        <div class="glass p-5 md:p-6 text-center border-l-4 border-yellow-500 bg-yellow-900/10">
+                            <span class="text-3xl md:text-4xl font-black text-white block">0.97</span>
+                            <span class="text-[10px] md:text-xs uppercase tracking-widest text-yellow-400 mt-2 block">Kappa (Almost Perfect)</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 md:gap-5 mb-8">
+                        <div class="glass p-4 md:p-5 text-center">
+                            <span class="text-xl md:text-2xl font-bold text-slate-200 block">97.53%</span>
+                            <span class="text-[10px] md:text-xs uppercase text-slate-400 block mt-1">Rata-rata Presisi</span>
+                        </div>
+                        <div class="glass p-4 md:p-5 text-center">
+                            <span class="text-xl md:text-2xl font-bold text-slate-200 block">96.95%</span>
+                            <span class="text-[10px] md:text-xs uppercase text-slate-400 block mt-1">Rata-rata Recall</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm md:text-base text-slate-300 mb-8 text-justify leading-relaxed">
+                        Metode <i>Random Forest</i> terbukti sangat presisi. Luasan mangrove berfluktuasi dari <b>869,64 Ha (2018)</b> memuncak menjadi <b>1.202,30 Ha (2021)</b> berkat keberhasilan reforestasi (pertumbuhan baru <i>gain</i> masif di Pamurbaya). Namun terfragmentasi kembali menjadi <b>1.078,41 Ha (2024)</b> akibat ekspansi lahan terbangun yang semakin menyebar ke arah pesisir.
+                    </p>
+
+                    <h4 class="text-xs md:text-sm font-black uppercase tracking-widest mb-4 text-white text-center md:text-left">Luas Tutupan Lahan Historis (Hektar)</h4>
+                    <div class="table-container shadow-2xl">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="text-left pl-6">Kelas Lahan</th>
+                                    <th>2018</th>
+                                    <th>2021</th>
+                                    <th>2024</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm font-semibold text-slate-200">
+                                <tr><td class="text-emerald-400 text-left pl-6">Mangrove</td><td>869.64</td><td>1,202.30</td><td class="text-emerald-400">1,078.41</td></tr>
+                                <tr><td class="text-teal-400 text-left pl-6">Tambak</td><td>3,766.58</td><td>3,736.50</td><td class="text-red-400">3,455.59</td></tr>
+                                <tr><td class="text-orange-400 text-left pl-6">Lhn Terbangun</td><td>3,220.18</td><td>3,051.24</td><td class="text-yellow-400">3,413.58</td></tr>
+                                <tr><td class="text-lime-500 text-left pl-6">Veg. Lainnya</td><td>3,046.97</td><td>2,864.27</td><td>2,895.99</td></tr>
+                                <tr><td class="text-blue-400 text-left pl-6">Sungai</td><td>114.72</td><td>163.78</td><td>174.52</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> 
+            
+
+            <div class="glass p-8 md:p-12 reveal bg-black/40 border border-white/10 shadow-2xl">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl lg:text-4xl font-black uppercase tracking-widest text-white">Distribusi <span class="text-emerald-500">Administratif</span></h3>
+                    <p class="text-sm md:text-base text-slate-400 mt-4 max-w-2xl mx-auto">Persentase luas area mangrove terhadap total luas wilayah pada masing-masing 23 Kelurahan Pesisir Kota Surabaya.</p>
+                </div>
+                
+                <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                    <div class="lg:col-span-7 w-full">
+                        <div class="slider-container border border-white/10 rounded-2xl overflow-hidden bg-black/60 p-3 mb-8 shadow-inner">
+                            <div class="slider-track items-center" id="kel-slider">
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-black/80 text-emerald-400 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-4 border border-emerald-500/30">Grafik 2018</span>
+                                    <div class="img-wrapper aspect-[4/3] bg-transparent border-none">
+                                        <img src="assets/grafik_kelurahan_2018.png" alt="Grafik 2018" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-black/80 text-emerald-400 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-4 border border-emerald-500/30">Grafik 2021</span>
+                                    <div class="img-wrapper aspect-[4/3] bg-transparent border-none">
+                                        <img src="assets/grafik_kelurahan_2021.png" alt="Grafik 2021" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-black/80 text-emerald-400 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-4 border border-emerald-500/30">Grafik 2024</span>
+                                    <div class="img-wrapper aspect-[4/3] bg-transparent border-none">
+                                        <img src="assets/grafik_kelurahan_2024.png" alt="Grafik 2024" class="img-zoom">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap justify-center gap-3 mb-6">
+                            <button onclick="goToSlide('kel-slider', 0, '.kel-btn', this)" class="kel-btn tab-btn active px-6 md:px-8 py-2.5 glass rounded-full text-xs font-bold transition border-white/10 hover:bg-white/10">2018</button>
+                            <button onclick="goToSlide('kel-slider', 1, '.kel-btn', this)" class="kel-btn tab-btn px-6 md:px-8 py-2.5 glass rounded-full text-xs font-bold transition border-white/10 hover:bg-white/10">2021</button>
+                            <button onclick="goToSlide('kel-slider', 2, '.kel-btn', this)" class="kel-btn tab-btn px-6 md:px-8 py-2.5 glass rounded-full text-xs font-bold transition border-white/10 hover:bg-white/10">2024</button>
+                        </div>
+                        <div class="text-center">
+                            <button onclick="toggleAutoPlay('kel-slider', this, 3, '.kel-btn', 'emerald')" class="bg-emerald-500 text-[#020b04] px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] transform hover:scale-105 border-0">
+                                ▶ PLAY TIME-LAPSE
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5">
+                        <div class="flex items-start gap-5 mb-8">
+                            <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 font-black text-xl shrink-0 mt-1 border border-emerald-500/30">i</div>
+                            <p class="text-sm md:text-base text-slate-300 leading-relaxed text-justify">
+                                Kawasan Pantai Timur Surabaya (Pamurbaya) memegang persentase kelestarian paling dominan. Kelurahan <b>Kalisari, Kejawaan Putih Tambak, Gunung Anyar Tambak, dan Wonorejo</b> konsisten menempati posisi teratas dengan proporsi luasan ekosistem hijau yang sangat terjaga secara spasial.
+                            </p>
+                        </div>
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 font-black text-xl shrink-0 mt-1 border border-red-500/30">!</div>
+                            <p class="text-sm md:text-base text-slate-300 leading-relaxed text-justify">
+                                Berbanding terbalik dengan Pantai Utara (Panturbaya). Kelurahan Gebang Putih, Perak Utara, dan Tanah Kali Kedinding mencatatkan persentase mangrove nyaris mendekati <b>0%</b>. Hal ini merepresentasikan dampak ekstrem dari alih fungsi lahan permanen menjadi infrastruktur pelabuhan dan kawasan industri berat.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="prediksi" class="py-32 px-6 lg:px-12 relative overflow-hidden border-t border-white/5">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-[#0a2e16] to-[#010602] z-0"></div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-24 reveal">
+                <span class="inline-block bg-pink-900/40 text-pink-400 border border-pink-500/50 px-6 py-2 rounded-full text-xs md:text-sm font-black uppercase tracking-widest shadow-[0_0_20px_rgba(244,114,182,0.3)] mb-6">
+                    Simulasi Spasial CA-ANN
+                </span>
+                <h2 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase">
+                    PROYEKSI <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-yellow-400">2030</span>
+                </h2>
+            </div>
+
+            <div class="mb-20 reveal">
+                <div class="flex items-center justify-center gap-4 mb-8">
+                    <span class="h-px bg-slate-600 w-16"></span>
+                    <h3 class="text-center text-sm md:text-base font-bold text-slate-300 uppercase tracking-widest">Validasi Model (Kalibrasi Tahun 2024)</h3>
+                    <span class="h-px bg-slate-600 w-16"></span>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+                    <div class="glass p-6 lg:p-8 text-center border-b-4 border-emerald-500 bg-black/50 hover:-translate-y-2 transition duration-300">
+                        <span class="text-4xl lg:text-5xl font-black text-emerald-400 block mb-2">79.24%</span>
+                        <span class="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 font-bold">Overall Accuracy</span>
+                    </div>
+                    <div class="glass p-6 lg:p-8 text-center border-b-4 border-emerald-500 bg-black/50 hover:-translate-y-2 transition duration-300">
+                        <span class="text-4xl lg:text-5xl font-black text-emerald-400 block mb-2">0.716</span>
+                        <span class="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 font-bold">Kappa Overall (Substantial)</span>
+                    </div>
+                    <div class="glass p-6 lg:p-8 text-center border-b-4 border-yellow-500 bg-black/50 hover:-translate-y-2 transition duration-300">
+                        <span class="text-4xl lg:text-5xl font-black text-yellow-400 block mb-2">0.914</span>
+                        <span class="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 font-bold">Kappa Histogram (Quantity)</span>
+                    </div>
+                    <div class="glass p-6 lg:p-8 text-center border-b-4 border-yellow-500 bg-black/50 hover:-translate-y-2 transition duration-300">
+                        <span class="text-4xl lg:text-5xl font-black text-yellow-400 block mb-2">0.783</span>
+                        <span class="text-[10px] md:text-xs uppercase tracking-widest text-slate-400 font-bold">Kappa Location (Spatial)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <div class="lg:col-span-7 reveal w-full">
+                    <div class="glass p-3 relative border border-pink-500/30 bg-black/60 mb-8 shadow-[0_0_40px_rgba(244,114,182,0.15)]">
+                        <div class="absolute -top-5 -left-5 bg-pink-500 text-white font-black px-6 py-2 rounded-xl text-sm shadow-2xl z-20 border border-pink-300 tracking-widest uppercase">PREDIKSI CA-ANN</div>
+                        
+                        <div class="slider-container rounded-xl overflow-hidden bg-[#010602]">
+                            <div class="slider-track items-center" id="prediksi-map-slider">
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-emerald-950 border border-emerald-500 text-emerald-400 px-5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-4 mt-3">Peta Aktual (Random Forest) 2024</span>
+                                    <div class="img-wrapper aspect-[4/3]">
+                                        <img src="assets/lulc_2024.png" alt="Aktual 2024" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-blue-950 border border-blue-500 text-blue-400 px-5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-4 mt-3">Peta Simulasi (CA-ANN) 2024</span>
+                                    <div class="img-wrapper aspect-[4/3]">
+                                        <img src="assets/peta_simulasi_2024.png" alt="Simulasi 2024" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-pink-950 border border-pink-500 text-pink-400 px-5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-4 mt-3">Peta Proyeksi LULC 2030</span>
+                                    <div class="img-wrapper aspect-[4/3]">
+                                        <img src="assets/peta_prediksi_2030.png" alt="Prediksi 2030" class="img-zoom">
+                                    </div>
+                                </div>
+                                <div class="slide flex flex-col items-center">
+                                    <span class="bg-orange-950 border border-orange-500 text-orange-400 px-5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-4 mt-3">Grafik Prediksi Kelurahan 2030</span>
+                                    <div class="img-wrapper aspect-[4/3] bg-transparent border-none">
+                                        <img src="assets/grafik_kelurahan_2030.png" alt="Grafik Prediksi 2030" class="img-zoom">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-6">
+                        <button onclick="goToSlide('prediksi-map-slider', 0, '.prediksi-btn', this)" class="prediksi-btn tab-btn active px-4 md:px-5 py-2.5 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition hover:bg-white/10">Aktual '24</button>
+                        <button onclick="goToSlide('prediksi-map-slider', 1, '.prediksi-btn', this)" class="prediksi-btn tab-btn px-4 md:px-5 py-2.5 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition hover:bg-white/10">Simulasi '24</button>
+                        <button onclick="goToSlide('prediksi-map-slider', 2, '.prediksi-btn', this)" class="prediksi-btn tab-btn px-4 md:px-5 py-2.5 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition hover:bg-white/10 text-pink-400 border-pink-500/30">Proyeksi '30</button>
+                        <button onclick="goToSlide('prediksi-map-slider', 3, '.prediksi-btn', this)" class="prediksi-btn tab-btn px-4 md:px-5 py-2.5 glass rounded-full text-[10px] md:text-xs font-bold uppercase transition hover:bg-white/10 text-orange-400 border-orange-500/30">Grafik '30</button>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="toggleAutoPlay('prediksi-map-slider', this, 4, '.prediksi-btn', 'yellow')" class="bg-yellow-500 text-[#020b04] px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-yellow-400 transition-all shadow-[0_0_25px_rgba(251,191,36,0.4)] transform hover:scale-105 border-0">
+                            ▶ PLAY TIME-LAPSE
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 reveal delay-200 flex flex-col justify-center">
+                    <h3 class="text-3xl lg:text-4xl font-black uppercase mb-6 text-white leading-tight">Ledakan Beton, <br><span class="text-pink-400">Mangrove Menemukan Keseimbangan</span></h3>
+                    <p class="text-sm md:text-base text-slate-300 leading-relaxed mb-8 text-justify">
+                        Model memprediksi bahwa pada tahun 2030, luasan mangrove cenderung mulai stabil dengan laju penyusutan yang sangat melambat menjadi <b>1.045,81 Ha</b>. Meskipun ekosistem mangrove menunjukkan resiliensi, ancaman ekstrem datang dari <b>ekspansi lahan terbangun yang diproyeksikan melonjak secara drastis sebesar +5,11% (mencapai 3.976,47 Ha)</b>. Ledakan urbanisasi ini secara masif akan mengonversi dan memecah-belah kawasan tambak di sekitar *buffer zone* (sabuk hijau) pesisir.
+                    </p>
+
+                    <h4 class="text-sm font-black uppercase mb-4 text-yellow-400 tracking-widest text-center md:text-left">Matriks Laju Perubahan Lahan</h4>
+                    <div class="table-container shadow-2xl bg-black/60 border border-yellow-500/30">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="text-left pl-6">Periode</th>
+                                    <th class="text-emerald-400">Δ Mangrove</th>
+                                    <th class="text-yellow-400">Δ Lhn. Terbangun</th>
+                                    <th class="text-red-400">Δ Tambak</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm font-semibold text-slate-200">
+                                <tr>
+                                    <td class="text-left pl-6">2018 - 2021</td>
+                                    <td class="text-emerald-400">+332.66 Ha</td>
+                                    <td class="text-slate-400">-168.93 Ha</td>
+                                    <td class="text-red-400">-30.09 Ha</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left pl-6">2021 - 2024</td>
+                                    <td class="text-red-400">-123.89 Ha</td>
+                                    <td class="text-yellow-400">+362.33 Ha</td>
+                                    <td class="text-red-400">-280.90 Ha</td>
+                                </tr>
+                                <tr class="bg-yellow-500/15 border-l-4 border-yellow-500">
+                                    <td class="text-yellow-400 font-bold py-5 text-left pl-5">2024 - 2030<br><span class="text-[10px] text-yellow-200 uppercase tracking-widest">(Proyeksi)</span></td>
+                                    <td class="text-slate-300 py-5 leading-relaxed">-32.60 Ha<br><span class="text-[10px] font-normal opacity-70 block">(-0.30% thd Total)</span></td>
+                                    <td class="text-yellow-500 font-black py-5 text-lg leading-relaxed">+562.90 Ha<br><span class="text-[10px] font-normal text-yellow-200 block">(+5.11% thd Total)</span></td>
+                                    <td class="text-red-500 font-bold py-5 leading-relaxed">-252.74 Ha<br><span class="text-[10px] font-normal opacity-70 block">(-2.29% thd Total)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="bg-black/80 p-4 border-t border-white/10">
+                            <p class="text-xs text-slate-400 italic text-center leading-relaxed">*Persentase dihitung berdasarkan proporsi perubahan terhadap total keseluruhan luas wilayah analisis (±11.018 Hektar) untuk merepresentasikan pergeseran tata ruang secara makro.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 px-6 lg:px-12 bg-[#010602] border-t border-emerald-900/50 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-900/10 via-transparent to-transparent z-0"></div>
+
+        <div class="max-w-6xl mx-auto relative z-10">
+            
+            <div class="mb-20 reveal">
+                <div class="text-center mb-10">
+                    <span class="w-16 h-1.5 bg-emerald-500 inline-block mb-6 rounded"></span>
+                    <h3 class="text-4xl lg:text-5xl font-black uppercase tracking-tighter text-white">Kesimpulan <span class="text-emerald-500">Penelitian</span></h3>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+                    <div class="glass p-8 lg:p-10 border-l-4 border-emerald-500 bg-emerald-900/10 hover:-translate-y-2 transition-transform duration-300 relative overflow-hidden shadow-xl">
+                        <div class="absolute -right-4 -bottom-10 text-[150px] font-black text-emerald-500/10 z-0 leading-none">1</div>
+                        <div class="relative z-10">
+                            <h4 class="text-lg font-black text-emerald-400 uppercase tracking-widest mb-4">Dinamika Spatio-Temporal</h4>
+                            <p class="text-sm md:text-base text-slate-300 leading-relaxed text-justify">
+                                Ekstraksi citra Sentinel-2 dengan algoritma <b>Random Forest multi-indeks</b> berhasil memetakan tutupan lahan pesisir Surabaya (2018–2024) dengan presisi luar biasa (Akurasi > 97%). Dinamika mangrove terbukti sangat dipengaruhi oleh pasokan sedimen dan air dari <b>sungai (0-500m)</b>, elevasi rendah (0-2 mdpl), lereng landai (0-3%), dan konsisten <b>menjauhi tekanan jaringan jalan raya (>60m)</b>.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="glass p-8 lg:p-10 border-l-4 border-pink-500 bg-pink-900/10 hover:-translate-y-2 transition-transform duration-300 relative overflow-hidden shadow-xl">
+                        <div class="absolute -right-4 -bottom-10 text-[150px] font-black text-pink-500/10 z-0 leading-none">2</div>
+                        <div class="relative z-10">
+                            <h4 class="text-lg font-black text-pink-400 uppercase tracking-widest mb-4">Prediksi CA-ANN 2030</h4>
+                            <p class="text-sm md:text-base text-slate-300 leading-relaxed text-justify">
+                                Model CA-ANN terbukti valid secara spasial memproyeksikan masa depan. Pada tahun 2030, luasan mangrove Surabaya diprediksi cenderung stabil melambat di angka <b>1.045,81 Hektar</b>. Namun, ekosistem menghadapi ancaman ekstrem dari <b>ekspansi lahan terbangun yang melonjak drastis sebesar 5,11%</b> (+562,90 Ha), yang akan secara masif mendesak kawasan tambak di sekitar sabuk hijau.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-10 lg:p-16 text-center mb-24 reveal border-emerald-500 border-2 shadow-[0_0_60px_rgba(16,185,129,0.15)] bg-gradient-to-b from-emerald-900/20 to-black">
+                <div class="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-emerald-500/50">
+                    <span class="text-3xl">🏛️</span>
+                </div>
+                <h3 class="text-3xl lg:text-4xl font-black uppercase mb-8 text-emerald-400 tracking-wider">Rekomendasi Kebijakan (RTRW)</h3>
+                <p class="text-base md:text-lg text-slate-300 leading-loose max-w-4xl mx-auto italic font-medium">
+                    "Pemerintah Kota Surabaya (Dinas Lingkungan Hidup) disarankan untuk memperketat pengawasan tata ruang dan penegakan hukum di kawasan penyangga pesisir Pamurbaya. <b>Perlindungan lahan tambak yang berbatasan langsung dengan mangrove wajib diintegrasikan ke dalam skenario mitigasi</b> agar <i>buffer zone</i> (sabuk transisi) ini tidak musnah sepenuhnya terkonversi menjadi kawasan komersial dan industri pada tahun 2030."
+                </p>
+            </div>
+
+            <div class="text-center mb-16 reveal">
+                <span class="w-16 h-1.5 bg-slate-600 inline-block mb-6 rounded"></span>
+                <h3 class="text-2xl font-black uppercase tracking-widest text-white">Tim Peneliti</h3>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-10 lg:gap-12 reveal delay-200">
+                <div class="glass p-8 lg:p-10 flex flex-col md:flex-row items-center md:items-start gap-8 hover:bg-emerald-900/20 transition-all hover:-translate-y-3 border border-white/5 shadow-xl">
+                    <img src="assets/sofi_profile.jpeg" alt="Dewi Sofiatul Himmah" class="w-32 h-32 rounded-full object-cover border-4 border-emerald-500 shadow-[0_0_25px_rgba(16,185,129,0.5)] md:shrink-0">
+                    <div class="text-center md:text-left">
+                        <h4 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Dewi Sofiatul Himmah</h4>
+                        <p class="text-xs bg-emerald-500/20 text-emerald-400 font-bold px-4 py-1.5 rounded-full inline-block mb-4 border border-emerald-500/30">Peneliti Utama | 222212565</p>
+                        <p class="text-sm text-slate-400 leading-relaxed text-justify">
+                            Mahasiswa D-IV Komputasi Statistik Peminatan Sains Data, Politeknik Statistika STIS (Angkatan 2026). Memiliki ketertarikan mendalam pada <i>Data Science, Geographic Information Systems (GIS), Remote Sensing</i>, dan analisis keruangan untuk pelestarian lingkungan pesisir.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass p-8 lg:p-10 flex flex-col md:flex-row items-center md:items-start gap-8 hover:bg-emerald-900/20 transition-all hover:-translate-y-3 border border-white/5 shadow-xl">
+                    <img src="assets/dosen_profile.jpg" alt="Ricky Yordani" class="w-32 h-32 rounded-full object-cover border-4 border-slate-600 shadow-xl grayscale hover:grayscale-0 transition duration-500 md:shrink-0">
+                    <div class="text-center md:text-left">
+                        <h4 class="text-2xl font-black text-white uppercase tracking-tight mb-2">Ricky Yordani, M.Stat.</h4>
+                        <p class="text-xs bg-slate-700/50 text-slate-300 font-bold px-4 py-1.5 rounded-full inline-block mb-4 border border-slate-500/30">Dosen Pembimbing</p>
+                        <p class="text-sm text-slate-400 leading-relaxed text-justify">
+                            Dosen di Politeknik Statistika STIS dengan kepakaran riset di bidang <i>Computational Statistics, Analisis Data Terapan, dan Pemodelan Statistik</i>. Memiliki publikasi di bidang regresi, <i>machine learning</i>, serta pemanfaatan <i>big data</i> untuk statistik resmi dan kebijakan publik.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black py-12 text-center border-t border-emerald-900/40 relative z-20">
+        <div class="flex justify-center items-center gap-6 mb-6">
+            <img src="https://stis.ac.id/media/source/up.png" alt="Logo STIS" class="w-12 opacity-60 grayscale hover:grayscale-0 transition duration-300">
+        </div>
+        <p class="text-xs uppercase tracking-widest text-slate-500 font-bold">
+            © 2026 | Analisis Spatio-Temporal CA-ANN Kota Surabaya <br class="md:hidden"><span class="hidden md:inline"> | </span> Politeknik Statistika STIS
+        </p>
+    </footer>
+
+    <script>
+        // --- 1. HISTORIC SATELLITE TABS LOGIC ---
+        const years = [2018, 2021, 2024];
+        let currentIdx = 0;
+        let playIntervalSat;
+
+        function setYear(year, btn) {
+            const img = document.getElementById('sat-image');
+            img.style.opacity = '0.2';
+            
+            setTimeout(() => {
+                img.src = `assets/satelit_${year}.png`; 
+                document.getElementById('sat-year-label').innerText = year;
+                img.style.opacity = '1';
+            }, 300);
+
+            document.querySelectorAll('#historic-controls .tab-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+        }
+
+        document.getElementById('play-btn').addEventListener('click', function() {
+            let playing = this.innerText.includes('STOP');
+            if(playing) {
+                clearInterval(playIntervalSat);
+                this.innerHTML = '▶ PLAY TIME-LAPSE';
+                this.classList.remove('bg-red-500', 'text-white', 'shadow-[0_0_30px_rgba(239,68,68,0.5)]');
+                this.classList.add('bg-pink-500', 'text-white');
+            } else {
+                this.innerHTML = '⏸ STOP TIME-LAPSE';
+                this.classList.remove('bg-pink-500', 'text-white');
+                this.classList.add('bg-red-500', 'text-white', 'shadow-[0_0_30px_rgba(239,68,68,0.5)]');
+                
+                playIntervalSat = setInterval(() => {
+                    currentIdx = (currentIdx + 1) % years.length;
+                    setYear(years[currentIdx], document.querySelectorAll('#historic-controls .tab-btn')[currentIdx]);
+                }, 2000); 
+            }
+        });
+
+        // --- 2. VIEW SWITCHER (Historic vs Google Earth Web) ---
+        function switchView(type) {
+            const historicView = document.getElementById('historic-view');
+            const liveView = document.getElementById('live-view');
+            const controls = document.getElementById('historic-controls');
+            const btnHistoric = document.getElementById('btn-historic');
+            const btnLive = document.getElementById('btn-live');
+
+            if(type === 'live') {
+                historicView.classList.add('hidden');
+                liveView.classList.remove('hidden');
+                controls.style.display = 'none';
+                
+                btnLive.classList.add('bg-emerald-500', 'text-[#020b04]', 'shadow-[0_0_20px_rgba(16,185,129,0.5)]');
+                btnLive.classList.remove('text-slate-400', 'border', 'border-white/10');
+                
+                btnHistoric.classList.remove('bg-emerald-500', 'text-[#020b04]', 'shadow-[0_0_20px_rgba(16,185,129,0.5)]');
+                btnHistoric.classList.add('text-slate-400', 'border', 'border-white/10');
+            } else {
+                historicView.classList.remove('hidden');
+                liveView.classList.add('hidden');
+                controls.style.display = 'block';
+                
+                btnHistoric.classList.add('bg-emerald-500', 'text-[#020b04]', 'shadow-[0_0_20px_rgba(16,185,129,0.5)]');
+                btnHistoric.classList.remove('text-slate-400', 'border', 'border-white/10');
+                
+                btnLive.classList.remove('bg-emerald-500', 'text-[#020b04]', 'shadow-[0_0_20px_rgba(16,185,129,0.5)]');
+                btnLive.classList.add('text-slate-400', 'border', 'border-white/10');
+            }
+        }
+
+        // --- 3. ACCORDION (Variabel Pendorong) ---
+        function toggleDriver(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            const isActive = content.classList.contains('active');
+            
+            document.querySelectorAll('.dropdown-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('button span[id^="icon-"]').forEach(i => {
+                i.innerText = '+';
+                i.style.transform = 'rotate(0deg)';
+            });
+            
+            if (!isActive) {
+                content.classList.add('active');
+                icon.innerText = '−';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // --- 4. UNIVERSAL TAB & TIMELAPSE LOGIC ---
+        const sliderStates = {
+            'lulc-slider': 0,
+            'kel-slider': 0,
+            'prediksi-map-slider': 0
+        };
+        const playIntervals = {};
+
+        function goToSlide(sliderId, index, btnGroupClass, btnElement) {
+            const track = document.getElementById(sliderId);
+            sliderStates[sliderId] = index;
+            track.style.transform = `translateX(-${index * 100}%)`;
+
+            document.querySelectorAll(btnGroupClass).forEach(b => b.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+        }
+
+        // Fungsi AutoPlay Anti-Crash
+        function toggleAutoPlay(sliderId, playBtn, totalSlides, btnGroupClass, themeColor) {
+            let isPlaying = playBtn.innerText.includes('STOP');
+            
+            if(isPlaying) {
+                clearInterval(playIntervals[sliderId]);
+                playBtn.innerHTML = '▶ PLAY TIME-LAPSE';
+                playBtn.classList.remove('bg-red-500', 'text-white', 'shadow-[0_0_25px_rgba(239,68,68,0.5)]');
+                
+                if(themeColor === 'emerald') {
+                    playBtn.classList.add('bg-emerald-500', 'text-[#020b04]');
+                } else {
+                    playBtn.classList.add('bg-yellow-500', 'text-[#020b04]');
+                }
+            } else {
+                playBtn.innerHTML = '⏸ STOP TIME-LAPSE';
+                playBtn.classList.remove('bg-emerald-500', 'bg-yellow-500', 'text-[#020b04]');
+                playBtn.classList.add('bg-red-500', 'text-white', 'shadow-[0_0_25px_rgba(239,68,68,0.5)]');
+                
+                playIntervals[sliderId] = setInterval(() => {
+                    let nextIdx = (sliderStates[sliderId] + 1) % totalSlides;
+                    let btns = document.querySelectorAll(btnGroupClass);
+                    
+                    let targetBtn = btns[nextIdx] ? btns[nextIdx] : null;
+                    goToSlide(sliderId, nextIdx, btnGroupClass, targetBtn);
+                }, 2500); // 2.5 Detik per gambar agar mudah dibaca
+            }
+        }
+
+        function moveSlide(sliderId, direction) {
+            const track = document.getElementById(sliderId);
+            const slides = track.children;
+            const totalSlides = slides.length;
+            
+            sliderStates[sliderId] = (sliderStates[sliderId] + direction + totalSlides) % totalSlides;
+            track.style.transform = `translateX(-${sliderStates[sliderId] * 100}%)`;
+            
+            // Sync buttons if class exists
+            let btnClass = '';
+            if(sliderId === 'lulc-slider') btnClass = '.lulc-btn';
+            if(sliderId === 'kel-slider') btnClass = '.kel-btn';
+            if(sliderId === 'prediksi-map-slider') btnClass = '.prediksi-btn';
+            
+            if(btnClass) {
+                let btns = document.querySelectorAll(btnClass);
+                document.querySelectorAll(btnClass).forEach(b => b.classList.remove('active'));
+                if(btns[sliderStates[sliderId]]) btns[sliderStates[sliderId]].classList.add('active');
+            }
+        }
+
+        // --- 5. NAVBAR EFFECT ON SCROLL ---
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if(window.scrollY > 80) {
+                nav.classList.add('bg-[#010602]/95', 'backdrop-blur-lg', 'shadow-[0_4px_30px_rgba(0,0,0,0.8)]', 'border-b', 'border-emerald-900/30');
+            } else {
+                nav.classList.remove('bg-[#010602]/95', 'backdrop-blur-lg', 'shadow-[0_4px_30px_rgba(0,0,0,0.8)]', 'border-b', 'border-emerald-900/30');
+            }
+        });
+
+        // --- 6. SCROLL REVEAL ANIMATIONS ---
+        ScrollReveal().reveal('.reveal', { 
+            distance: '60px', 
+            duration: 1200, 
+            easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)', 
+            interval: 100, 
+            origin: 'bottom',
+            viewFactor: 0.1, 
+            reset: false 
+        });
+    </script>
+</body>
+</html>
